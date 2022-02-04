@@ -29,7 +29,7 @@ function App() {
   const [selectedToDeleteCard, setSelectedToDeleteCard]       = React.useState(null);
   const [currentUser, setCurrentUser]                         = React.useState({});
   const [cards, setCards]                                     = React.useState([]);
-  const [isLoggedIn, setIsLoggedIn]                           = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn]                           = React.useState(true);
 
 // ********************************************************************************************* //
 //                      Fetch initial cards & user data on page load                             //
@@ -195,50 +195,51 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <div className="page__wrapper">
-          <Switch>
-            <ProtectedRoute exact path="/" isLoggedIn={isLoggedIn}>
-              <Header />
+          <Header />
+          <div className="content">
+            <Switch>
+              <ProtectedRoute exact path="/" isLoggedIn={isLoggedIn}>
 
-              <Main
-                onEditProfileClick={handleEditProfileClick}
-                onAddPlaceClick={handleAddPlaceClick}
-                onEditAvatarClick={handleEditAvatarClick}
-                onCardClick={handleCardClick}
-                onCardDeleteClick={handleCardDeleteClick}
-                onCardLike={handleCardLike}
-                cards={cards}
-              />
+                <Main
+                  onEditProfileClick={handleEditProfileClick}
+                  onAddPlaceClick={handleAddPlaceClick}
+                  onEditAvatarClick={handleEditAvatarClick}
+                  onCardClick={handleCardClick}
+                  onCardDeleteClick={handleCardDeleteClick}
+                  onCardLike={handleCardLike}
+                  cards={cards}
+                />
 
-              <Footer />
+                <EditAvatarPopup
+                  isOpen={isEditAvatarPopupOpen}
+                  isDataLoading={isDataLoading}
+                  onClose={closeAllPopups}
+                  onUpdateAvatar={handleUpdateAvatar} />
 
-              <EditAvatarPopup
-                isOpen={isEditAvatarPopupOpen}
-                isDataLoading={isDataLoading}
-                onClose={closeAllPopups}
-                onUpdateAvatar={handleUpdateAvatar} />
+                <EditProfilePopup
+                  isOpen={isEditProfilePopupOpen}
+                  isDataLoading={isDataLoading}
+                  onClose={closeAllPopups}
+                  onUpdateUser={handleUpdateUser} />
 
-              <EditProfilePopup
-                isOpen={isEditProfilePopupOpen}
-                isDataLoading={isDataLoading}
-                onClose={closeAllPopups}
-                onUpdateUser={handleUpdateUser} />
+                <AddPlacePopup
+                  isOpen={isAddPlacePopupOpen}
+                  isDataLoading={isDataLoading}
+                  onClose={closeAllPopups}
+                  onAddPlace={handleAddPlaceSubmit} />
 
-              <AddPlacePopup
-                isOpen={isAddPlacePopupOpen}
-                isDataLoading={isDataLoading}
-                onClose={closeAllPopups}
-                onAddPlace={handleAddPlaceSubmit} />
+                <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-              <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-
-              <DeletePlacePopup
-                card={selectedToDeleteCard}
-                isOpen={isDeletePlacePopupOpen}
-                isDataLoading={isDataLoading}
-                onClose={closeAllPopups}
-                onCardDelete={handleCardDeleteSubmit} />
-            </ProtectedRoute>
-          </Switch>
+                <DeletePlacePopup
+                  card={selectedToDeleteCard}
+                  isOpen={isDeletePlacePopupOpen}
+                  isDataLoading={isDataLoading}
+                  onClose={closeAllPopups}
+                  onCardDelete={handleCardDeleteSubmit} />
+              </ProtectedRoute>
+            </Switch>
+          </div>
+          <Footer />
         </div>
       </div>
     </CurrentUserContext.Provider>

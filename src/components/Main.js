@@ -23,7 +23,7 @@ function Main(props) {
   const currentUser = React.useContext(CurrentUserContext);
 
   return (
-    <main className="content">
+    <main>
       {/* section containing user info, functionality to edit it and to add new images */}
       <section className="profile">
         <div className="profile__avatar-container">
