@@ -1,4 +1,5 @@
 import React                from 'react';
+import {Switch, Route}      from 'react-router-dom';
 import Header               from './Header';
 import Main                 from './Main';
 import ImagePopup           from './ImagePopup';
@@ -7,6 +8,7 @@ import EditAvatarPopup      from './EditAvatarPopup';
 import AddPlacePopup        from './AddPlacePopup';
 import DeletePlacePopup     from './DeletePlacePopup';
 import Footer               from './Footer';
+import ProtectedRoute       from './ProtectedRoute';
 import api                  from '../utils/api';
 import CurrentUserContext   from '../contexts/CurrentUserContext';
 
@@ -27,6 +29,7 @@ function App() {
   const [selectedToDeleteCard, setSelectedToDeleteCard]       = React.useState(null);
   const [currentUser, setCurrentUser]                         = React.useState({});
   const [cards, setCards]                                     = React.useState([]);
+  const [isLoggedIn, setIsLoggedIn]                           = React.useState(false);
 
 // ********************************************************************************************* //
 //                      Fetch initial cards & user data on page load                             //
@@ -192,46 +195,50 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <div className="page__wrapper">
-          <Header />
+          <Switch>
+            <ProtectedRoute exact path="/" isLoggedIn={isLoggedIn}>
+              <Header />
 
-          <Main
-            onEditProfileClick={handleEditProfileClick}
-            onAddPlaceClick={handleAddPlaceClick}
-            onEditAvatarClick={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            onCardDeleteClick={handleCardDeleteClick}
-            onCardLike={handleCardLike}
-            cards={cards}
-          />
+              <Main
+                onEditProfileClick={handleEditProfileClick}
+                onAddPlaceClick={handleAddPlaceClick}
+                onEditAvatarClick={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                onCardDeleteClick={handleCardDeleteClick}
+                onCardLike={handleCardLike}
+                cards={cards}
+              />
 
-          <Footer />
+              <Footer />
 
-          <EditAvatarPopup
-            isOpen={isEditAvatarPopupOpen}
-            isDataLoading={isDataLoading}
-            onClose={closeAllPopups}
-            onUpdateAvatar={handleUpdateAvatar} />
+              <EditAvatarPopup
+                isOpen={isEditAvatarPopupOpen}
+                isDataLoading={isDataLoading}
+                onClose={closeAllPopups}
+                onUpdateAvatar={handleUpdateAvatar} />
 
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            isDataLoading={isDataLoading}
-            onClose={closeAllPopups}
-            onUpdateUser={handleUpdateUser} />
+              <EditProfilePopup
+                isOpen={isEditProfilePopupOpen}
+                isDataLoading={isDataLoading}
+                onClose={closeAllPopups}
+                onUpdateUser={handleUpdateUser} />
 
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            isDataLoading={isDataLoading}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit} />
+              <AddPlacePopup
+                isOpen={isAddPlacePopupOpen}
+                isDataLoading={isDataLoading}
+                onClose={closeAllPopups}
+                onAddPlace={handleAddPlaceSubmit} />
 
-          <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+              <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-          <DeletePlacePopup
-            card={selectedToDeleteCard}
-            isOpen={isDeletePlacePopupOpen}
-            isDataLoading={isDataLoading}
-            onClose={closeAllPopups}
-            onCardDelete={handleCardDeleteSubmit} />
+              <DeletePlacePopup
+                card={selectedToDeleteCard}
+                isOpen={isDeletePlacePopupOpen}
+                isDataLoading={isDataLoading}
+                onClose={closeAllPopups}
+                onCardDelete={handleCardDeleteSubmit} />
+            </ProtectedRoute>
+          </Switch>
         </div>
       </div>
     </CurrentUserContext.Provider>
