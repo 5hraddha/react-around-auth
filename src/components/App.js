@@ -29,7 +29,7 @@ function App() {
   const [selectedToDeleteCard, setSelectedToDeleteCard]       = React.useState(null);
   const [currentUser, setCurrentUser]                         = React.useState({});
   const [cards, setCards]                                     = React.useState([]);
-  const [isLoggedIn, setIsLoggedIn]                           = React.useState(true);
+  const [isLoggedIn, setIsLoggedIn]                           = React.useState(false);
 
 // ********************************************************************************************* //
 //                      Fetch initial cards & user data on page load                             //
@@ -189,6 +189,53 @@ function App() {
   }
 
 // ********************************************************************************************* //
+//                 Create props objects to pass to the React Components                          //
+// ********************************************************************************************* //
+const propsForMain = {
+  onEditProfileClick: handleEditProfileClick,
+  onAddPlaceClick:    handleAddPlaceClick,
+  onEditAvatarClick:  handleEditAvatarClick,
+  onCardClick:        handleCardClick,
+  onCardDeleteClick:  handleCardDeleteClick,
+  onCardLike:         handleCardLike,
+  cards,
+};
+
+const propsForEditAvatarPopup = {
+  isOpen:         isEditAvatarPopupOpen,
+  isDataLoading:  isDataLoading,
+  onClose:        closeAllPopups,
+  onUpdateAvatar: handleUpdateAvatar,
+};
+
+const propsForEditProfilePopup = {
+  isOpen:         isEditProfilePopupOpen,
+  isDataLoading:  isDataLoading,
+  onClose:        closeAllPopups,
+  onUpdateUser:   handleUpdateUser,
+};
+
+const propsForAddPlacePopup = {
+  isOpen:         isAddPlacePopupOpen,
+  isDataLoading:  isDataLoading,
+  onClose:        closeAllPopups,
+  onAddPlace:     handleAddPlaceSubmit,
+}
+
+const propsForImagePopup = {
+  card:     selectedCard,
+  onClose:  closeAllPopups,
+}
+
+const propsForDeletePlacePopup = {
+  card:           selectedToDeleteCard,
+  isOpen:         isDeletePlacePopupOpen,
+  isDataLoading:  isDataLoading,
+  onClose:        closeAllPopups,
+  onCardDelete:   handleCardDeleteSubmit,
+}
+
+// ********************************************************************************************* //
 //                       Return different views of the application                               //
 // ********************************************************************************************* //
   return (
@@ -199,43 +246,12 @@ function App() {
           <div className="content">
             <Switch>
               <ProtectedRoute exact path="/" isLoggedIn={isLoggedIn}>
-
-                <Main
-                  onEditProfileClick={handleEditProfileClick}
-                  onAddPlaceClick={handleAddPlaceClick}
-                  onEditAvatarClick={handleEditAvatarClick}
-                  onCardClick={handleCardClick}
-                  onCardDeleteClick={handleCardDeleteClick}
-                  onCardLike={handleCardLike}
-                  cards={cards}
-                />
-
-                <EditAvatarPopup
-                  isOpen={isEditAvatarPopupOpen}
-                  isDataLoading={isDataLoading}
-                  onClose={closeAllPopups}
-                  onUpdateAvatar={handleUpdateAvatar} />
-
-                <EditProfilePopup
-                  isOpen={isEditProfilePopupOpen}
-                  isDataLoading={isDataLoading}
-                  onClose={closeAllPopups}
-                  onUpdateUser={handleUpdateUser} />
-
-                <AddPlacePopup
-                  isOpen={isAddPlacePopupOpen}
-                  isDataLoading={isDataLoading}
-                  onClose={closeAllPopups}
-                  onAddPlace={handleAddPlaceSubmit} />
-
-                <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-
-                <DeletePlacePopup
-                  card={selectedToDeleteCard}
-                  isOpen={isDeletePlacePopupOpen}
-                  isDataLoading={isDataLoading}
-                  onClose={closeAllPopups}
-                  onCardDelete={handleCardDeleteSubmit} />
+                <Main {...propsForMain} />
+                <EditAvatarPopup {...propsForEditAvatarPopup} />
+                <EditProfilePopup {...propsForEditProfilePopup} />
+                <AddPlacePopup {...propsForAddPlacePopup} />
+                <ImagePopup {...propsForImagePopup} />
+                <DeletePlacePopup {...propsForDeletePlacePopup} />
               </ProtectedRoute>
             </Switch>
           </div>
