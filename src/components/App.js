@@ -28,12 +28,15 @@ function App() {
   const [currentUser, setCurrentUser]                         = React.useState({});
   const [cards, setCards]                                     = React.useState([]);
 
+// ********************************************************************************************* //
+//                      Fetch initial cards & user data on page load                             //
+// ********************************************************************************************* //
   React.useEffect(() => {
     api
       .getInitialCards()
         .then(setCards)
         .catch(err => {
-          console.log("Uh-oh! Error occured while fetching the existing cards from the server.");
+          console.log("Uh-oh! Error occurred while fetching the existing cards from the server.");
           console.log(err);
         });
   }, []);
@@ -43,11 +46,14 @@ function App() {
       .getUserData()
       .then(res => setCurrentUser(res))
       .catch(err => {
-        console.log("Uh-oh! Error occured while fetching the current user data from the server.");
+        console.log("Uh-oh! Error occurred while fetching the current user data from the server.");
         console.log(err);
       });
   }, []);
 
+// ********************************************************************************************* //
+//                        Handle mouse click or Esc key down event                               //
+// ********************************************************************************************* //
   React.useEffect(() => {
     const handleClickClose = e => {
       if(e.target.classList.contains('popup_opened')) {
@@ -90,6 +96,9 @@ function App() {
     setSelectedToDeleteCard(null);
   }
 
+// ********************************************************************************************* //
+//                      Handle all the user events on the web page                               //
+// ********************************************************************************************* //
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
@@ -111,7 +120,7 @@ function App() {
         .then(newCard =>
           setCards(state => state.map(c => c._id === card._id ? newCard : c)))
         .catch(err => {
-          console.log("Uh-oh! Error occured while changing the like status of the card.");
+          console.log("Uh-oh! Error occurred while changing the like status of the card.");
           console.log(err);
         });
   }
@@ -125,7 +134,7 @@ function App() {
           closeAllPopups();
         })
         .catch(err => {
-          console.log("Uh-oh! Error occured while deleting the selected card from the server.");
+          console.log("Uh-oh! Error occurred while deleting the selected card from the server.");
           console.log(err);
         })
         .finally(() => setIsDataLoading(false));
@@ -140,7 +149,7 @@ function App() {
         closeAllPopups();
       })
       .catch(err => {
-        console.log("Uh-oh! Error occured while updating the user data to the server.");
+        console.log("Uh-oh! Error occurred while updating the user data to the server.");
         console.log(err);
       })
       .finally(() => setIsDataLoading(false));
@@ -155,7 +164,7 @@ function App() {
         closeAllPopups();
       })
       .catch(err => {
-        console.log("Uh-oh! Error occured while updating the user avatar to the server.");
+        console.log("Uh-oh! Error occurred while updating the user avatar to the server.");
         console.log(err);
       })
       .finally(() => setIsDataLoading(false));
@@ -170,12 +179,15 @@ function App() {
         closeAllPopups();
       })
       .catch(err => {
-        console.log("Uh-oh! Error occured while adding a new card to the server.");
+        console.log("Uh-oh! Error occurred while adding a new card to the server.");
         console.log(err);
       })
       .finally(() => setIsDataLoading(false));
   }
 
+// ********************************************************************************************* //
+//                       Return different views of the application                               //
+// ********************************************************************************************* //
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
