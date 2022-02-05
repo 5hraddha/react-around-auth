@@ -59,45 +59,46 @@ function Login(props){
   }
 
   return (
-    <section className='auth-form'>
-      <Form
-        name="login"
-        title="Log in"
-        btnLabel={(isDataLoading) ? 'Logging in': 'Log in'}
-        linkPath="/register"
-        linkText="Not a member yet? Sign up here!"
-        onSubmit={handleSubmit}>
+    <div className="content">
+      <section className='auth-form'>
+        <Form
+          name="login"
+          title="Log in"
+          btnLabel={(isDataLoading) ? 'Logging in': 'Log in'}
+          linkPath="/register"
+          linkText="Not a member yet? Sign up here!"
+          onSubmit={handleSubmit}>
 
-        <input
-          className={emailInputClassName}
-          type="email"
-          id="login-email"
-          name="login-email"
-          placeholder="Email"
-          value={loginEmail}
-          onChange={handleInputChange}
-          required />
-        <span id="login-email-error" className={emailErrorClassName}>
-            {loginEmailErrorMessage}
-        </span>
+          <input
+            className={emailInputClassName}
+            type="email"
+            id="login-email"
+            name="login-email"
+            placeholder="Email"
+            value={loginEmail}
+            onChange={handleInputChange}
+            required />
+          <span id="login-email-error" className={emailErrorClassName}>
+              {loginEmailErrorMessage}
+          </span>
 
-        <input
-          className={passwordInputClassName}
-          type="password"
-          id="login-password"
-          name="login-password"
-          placeholder="Password"
-          value={loginPassword}
-          minLength="8"
-          onChange={handleInputChange}
-          required />
-        <span id="login-password-error" className={passwordErrorClassName}>
-            {loginPasswordErrorMessage}
-        </span>
+          <input
+            className={passwordInputClassName}
+            type="password"
+            id="login-password"
+            name="login-password"
+            placeholder="Password"
+            value={loginPassword}
+            minLength="8"
+            onChange={handleInputChange}
+            required />
+          <span id="login-password-error" className={passwordErrorClassName}>
+              {loginPasswordErrorMessage}
+          </span>
 
-      </Form>
-    </section>
-
+        </Form>
+      </section>
+    </div>
   );
 }
 

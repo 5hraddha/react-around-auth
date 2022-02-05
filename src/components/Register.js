@@ -59,44 +59,46 @@ function Register(props){
   }
 
   return (
-    <section className='auth-form'>
-      <Form
-        name="register"
-        title="Sign up"
-        btnLabel={(isDataLoading) ? 'Signing up': 'Sign up'}
-        linkPath="/login"
-        linkText="Already a member? Log in here!"
-        onSubmit={handleSubmit}>
+    <div className="content">
+      <section className='auth-form'>
+        <Form
+          name="register"
+          title="Sign up"
+          btnLabel={(isDataLoading) ? 'Signing up': 'Sign up'}
+          linkPath="/login"
+          linkText="Already a member? Log in here!"
+          onSubmit={handleSubmit}>
 
-        <input
-          className={emailInputClassName}
-          type="email"
-          id="register-email"
-          name="register-email"
-          placeholder="Email"
-          value={registerEmail}
-          onChange={handleInputChange}
-          required />
-        <span id="register-email-error" className={emailErrorClassName}>
-            {registerEmailErrorMessage}
-        </span>
+          <input
+            className={emailInputClassName}
+            type="email"
+            id="register-email"
+            name="register-email"
+            placeholder="Email"
+            value={registerEmail}
+            onChange={handleInputChange}
+            required />
+          <span id="register-email-error" className={emailErrorClassName}>
+              {registerEmailErrorMessage}
+          </span>
 
-        <input
-          className={passwordInputClassName}
-          type="password"
-          id="register-password"
-          name="register-password"
-          placeholder="Password"
-          value={registerPassword}
-          minLength="8"
-          onChange={handleInputChange}
-          required />
-        <span id="register-password-error" className={passwordErrorClassName}>
-            {registerPasswordErrorMessage}
-        </span>
+          <input
+            className={passwordInputClassName}
+            type="password"
+            id="register-password"
+            name="register-password"
+            placeholder="Password"
+            value={registerPassword}
+            minLength="8"
+            onChange={handleInputChange}
+            required />
+          <span id="register-password-error" className={passwordErrorClassName}>
+              {registerPasswordErrorMessage}
+          </span>
 
-      </Form>
-    </section>
+        </Form>
+      </section>
+    </div>
   );
 }
 

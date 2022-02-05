@@ -324,21 +324,21 @@ function App() {
   }
 
   const propsForRegister = {
-    isDataLoading:      isDataLoading,
-    onSubmit:           handleRegisterSubmit,
-    registerEmail:      registerEmail,
-    setRegisterEmail:   setRegisterEmail,
-    registerPassword:   registerPassword,
-    setRegisterPassword: setRegisterPassword,
+    isDataLoading,
+    onSubmit: handleRegisterSubmit,
+    registerEmail,
+    setRegisterEmail,
+    registerPassword,
+    setRegisterPassword,
   }
 
   const propsForLogin = {
-    isDataLoading:      isDataLoading,
-    onSubmit:           handleLoginSubmit,
-    loginEmail:         loginEmail,
-    setLoginEmail:      setLoginEmail,
-    loginPassword:      loginPassword,
-    setLoginPassword:   setLoginPassword,
+    isDataLoading,
+    onSubmit: handleLoginSubmit,
+    loginEmail,
+    setLoginEmail,
+    loginPassword,
+    setLoginPassword,
   }
 
 // ********************************************************************************************* //
@@ -349,13 +349,15 @@ function App() {
       <div className="page">
         <div className="page__wrapper">
           <Header />
-          <div className="content">
+
             <Route path="/register">
               <Register {...propsForRegister} />
             </Route>
+
             <Route path="/login">
               <Login {...propsForLogin} />
             </Route>
+
             <Switch>
               <ProtectedRoute exact path="/" isLoggedIn={isLoggedIn}>
                 <Main {...propsForMain} />
@@ -366,7 +368,7 @@ function App() {
                 <DeletePlacePopup {...propsForDeletePlacePopup} />
               </ProtectedRoute>
             </Switch>
-          </div>
+
           <Footer />
         </div>
       </div>
