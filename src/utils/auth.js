@@ -24,6 +24,8 @@ class Auth {
 
   /**
    * Register new user to the server using a POST request.
+   * @param {string} email The email ID of the user trying to register.
+   * @param {string} password The password of the user trying to register.
    * @return {Promise} The Promise of the Fetch API call.
    */
   register = (email, password) => {
@@ -40,6 +42,8 @@ class Auth {
 
   /**
    * Login a registered user to the server using a POST request.
+   * @param {string} email The email ID of the user trying to login.
+   * @param {string} password The password of the user trying to login.
    * @return {Promise} The Promise of the Fetch API call.
    */
   login = (email, password) => {
@@ -56,6 +60,7 @@ class Auth {
 
   /**
    * Validate a registered user's token to the server using a GET request.
+   * @param {string} userToken The token of the user trying to validate.
    * @return {Promise} The Promise of the Fetch API call.
    */
   validateUserToken = (userToken) => {

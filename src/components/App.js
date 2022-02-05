@@ -1,5 +1,10 @@
 import React                from 'react';
-import {Switch, Route}      from 'react-router-dom';
+import
+{
+  Switch,
+  Route,
+  useHistory,
+}                           from 'react-router-dom';
 import Header               from './Header';
 import Main                 from './Main';
 import ImagePopup           from './ImagePopup';
@@ -10,6 +15,7 @@ import DeletePlacePopup     from './DeletePlacePopup';
 import Footer               from './Footer';
 import ProtectedRoute       from './ProtectedRoute';
 import api                  from '../utils/api';
+import auth                 from '../utils/auth';
 import CurrentUserContext   from '../contexts/CurrentUserContext';
 
 /**
@@ -27,9 +33,15 @@ function App() {
   const [isDataLoading, setIsDataLoading]                     = React.useState(false);
   const [selectedCard, setSelectedCard]                       = React.useState(null);
   const [selectedToDeleteCard, setSelectedToDeleteCard]       = React.useState(null);
-  const [currentUser, setCurrentUser]                         = React.useState({});
   const [cards, setCards]                                     = React.useState([]);
+  const [currentUser, setCurrentUser]                         = React.useState({});
+  const [currentUserEmail, setCurrentUserEmail]               = React.useState('');
   const [isLoggedIn, setIsLoggedIn]                           = React.useState(false);
+  const [registerEmail, setRegisterEmail]                     = React.useState('');
+  const [registerPassword, setRegisterPassword]               = React.useState('');
+  const [loginEmail, setLoginEmail]                           = React.useState('');
+  const [loginPassword, setLoginPassword]                     = React.useState('');
+  const history                                               = useHistory();
 
 // ********************************************************************************************* //
 //                      Fetch initial cards & user data on page load                             //
@@ -53,6 +65,13 @@ function App() {
         console.log(err);
       });
   }, []);
+
+// ********************************************************************************************* //
+//                                Validate user token on page load                               //
+// ********************************************************************************************* //
+  React.useEffect(() => {
+    validateToken();
+  }, [validateToken]);
 
 // ********************************************************************************************* //
 //                        Handle mouse click or Esc key down event                               //
@@ -100,7 +119,7 @@ function App() {
   }
 
 // ********************************************************************************************* //
-//                      Handle all the user events on the web page                               //
+//                         Handle all the events on the web page                                 //
 // ********************************************************************************************* //
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
@@ -123,7 +142,7 @@ function App() {
         .then(newCard =>
           setCards(state => state.map(c => c._id === card._id ? newCard : c)))
         .catch(err => {
-          console.log("Uh-oh! Error occurred while changing the like status of the card.");
+          console.log('Uh-oh! Error occurred while changing the like status of the card.');
           console.log(err);
         });
   }
@@ -137,7 +156,7 @@ function App() {
           closeAllPopups();
         })
         .catch(err => {
-          console.log("Uh-oh! Error occurred while deleting the selected card from the server.");
+          console.log('Uh-oh! Error occurred while deleting the selected card from the server.');
           console.log(err);
         })
         .finally(() => setIsDataLoading(false));
@@ -152,7 +171,7 @@ function App() {
         closeAllPopups();
       })
       .catch(err => {
-        console.log("Uh-oh! Error occurred while updating the user data to the server.");
+        console.log('Uh-oh! Error occurred while updating the user data to the server.');
         console.log(err);
       })
       .finally(() => setIsDataLoading(false));
@@ -167,7 +186,7 @@ function App() {
         closeAllPopups();
       })
       .catch(err => {
-        console.log("Uh-oh! Error occurred while updating the user avatar to the server.");
+        console.log('Uh-oh! Error occurred while updating the user avatar to the server.');
         console.log(err);
       })
       .finally(() => setIsDataLoading(false));
@@ -182,11 +201,78 @@ function App() {
         closeAllPopups();
       })
       .catch(err => {
-        console.log("Uh-oh! Error occurred while adding a new card to the server.");
+        console.log('Uh-oh! Error occurred while adding a new card to the server.');
         console.log(err);
       })
       .finally(() => setIsDataLoading(false));
   }
+
+  const handleRegisterSubmit = () => {
+    auth
+      .register(registerEmail, registerPassword)
+      .then(res => {
+        //TODO - Remove console.log
+        //TODO - password === confirmPassword in Register component
+        console.log(res);
+        history.push('/login');
+      })
+      .catch(err => {
+        console.log('Uh-oh! Error occurred while registering a new user.');
+        if(err.status === 400){
+          console.log('One of the fields was filled in incorrectly while user registration.');
+        }
+      });
+  }
+
+  const handleLoginSubmit = () => {
+    auth
+      .login(loginEmail, loginPassword)
+      .then(res => {
+        if(!res.token){
+          return;
+        }
+        localStorage.setItem('token', res.token);
+        setCurrentUserEmail(loginEmail);
+        setLoginEmail('');
+        setLoginPassword('');
+        setIsLoggedIn(true);
+        history.push('/');
+      })
+      .catch(err => {
+        console.log('Uh-oh! Error occurred while logging in.');
+        if(err.status === 400){
+          console.log('One or more of the fields were not provided while logging in.');
+        }
+        if(err.status === 401){
+          console.log('The user with the specified email not found.');
+        }
+      });
+  }
+
+  const validateToken = React.useCallback(() => {
+    const jwt = localStorage.getItem('token');
+    if(jwt){
+      auth
+        .validateUserToken(jwt)
+        .then(res => {
+          if(!res){
+            return;
+          }
+          setCurrentUserEmail(res.data.email);
+          setIsLoggedIn(true);
+          history.push('/');
+        })
+        .catch(err => {
+          console.log('Uh-oh! Error occurred while validating token.');
+          if(err.status === 400){
+            console.log('Token not provided or provided in the wrong format.');
+          }
+          if(err.status === 401){
+            console.log('The provided token is invalid.');
+          }
+        });
+    }
+  }, [history])
 
 // ********************************************************************************************* //
 //                 Create props objects to pass to the React Components                          //

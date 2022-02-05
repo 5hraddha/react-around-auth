@@ -13,7 +13,7 @@ function ProtectedRoute({children, isLoggedIn, ...restProps}) {
       {
         isLoggedIn
         ? children
-        : <Redirect to="/signin" />
+        : <Redirect to="/login" />
       }
     </Route>
   );
