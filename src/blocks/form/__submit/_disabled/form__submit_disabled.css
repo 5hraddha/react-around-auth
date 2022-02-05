@@ -1,0 +1,8 @@
+.form__submit_disabled {
+  border: 1px solid rgba(0, 0, 0, .2);
+  color: rgba(0, 0, 0, .2);
+}
+
+.form__submit_disabled:hover {
+  cursor: not-allowed;
+}

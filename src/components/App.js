@@ -12,6 +12,8 @@ import EditProfilePopup     from './EditProfilePopup';
 import EditAvatarPopup      from './EditAvatarPopup';
 import AddPlacePopup        from './AddPlacePopup';
 import DeletePlacePopup     from './DeletePlacePopup';
+import Register             from './Register';
+import Login                from './Login';
 import Footer               from './Footer';
 import ProtectedRoute       from './ProtectedRoute';
 import api                  from '../utils/api';
@@ -65,13 +67,6 @@ function App() {
         console.log(err);
       });
   }, []);
-
-// ********************************************************************************************* //
-//                                Validate user token on page load                               //
-// ********************************************************************************************* //
-  React.useEffect(() => {
-    validateToken();
-  }, [validateToken]);
 
 // ********************************************************************************************* //
 //                        Handle mouse click or Esc key down event                               //
@@ -208,12 +203,10 @@ function App() {
   }
 
   const handleRegisterSubmit = () => {
+    setIsDataLoading(true);
     auth
       .register(registerEmail, registerPassword)
       .then(res => {
-        //TODO - Remove console.log
-        //TODO - password === confirmPassword in Register component
-        console.log(res);
         history.push('/login');
       })
       .catch(err => {
@@ -221,10 +214,12 @@ function App() {
         if(err.status === 400){
           console.log('One of the fields was filled in incorrectly while user registration.');
         }
-      });
+      })
+      .finally(() => setIsDataLoading(false));
   }
 
   const handleLoginSubmit = () => {
+    setIsDataLoading(true);
     auth
       .login(loginEmail, loginPassword)
       .then(res => {
@@ -275,51 +270,76 @@ function App() {
   }, [history])
 
 // ********************************************************************************************* //
+//                                Validate user token on page load                               //
+// ********************************************************************************************* //
+  React.useEffect(() => {
+    validateToken();
+  }, [validateToken]);
+
+// ********************************************************************************************* //
 //                 Create props objects to pass to the React Components                          //
 // ********************************************************************************************* //
-const propsForMain = {
-  onEditProfileClick: handleEditProfileClick,
-  onAddPlaceClick:    handleAddPlaceClick,
-  onEditAvatarClick:  handleEditAvatarClick,
-  onCardClick:        handleCardClick,
-  onCardDeleteClick:  handleCardDeleteClick,
-  onCardLike:         handleCardLike,
-  cards,
-};
+  const propsForMain = {
+    onEditProfileClick: handleEditProfileClick,
+    onAddPlaceClick:    handleAddPlaceClick,
+    onEditAvatarClick:  handleEditAvatarClick,
+    onCardClick:        handleCardClick,
+    onCardDeleteClick:  handleCardDeleteClick,
+    onCardLike:         handleCardLike,
+    cards,
+  };
 
-const propsForEditAvatarPopup = {
-  isOpen:         isEditAvatarPopupOpen,
-  isDataLoading:  isDataLoading,
-  onClose:        closeAllPopups,
-  onUpdateAvatar: handleUpdateAvatar,
-};
+  const propsForEditAvatarPopup = {
+    isOpen:         isEditAvatarPopupOpen,
+    isDataLoading:  isDataLoading,
+    onClose:        closeAllPopups,
+    onUpdateAvatar: handleUpdateAvatar,
+  };
 
-const propsForEditProfilePopup = {
-  isOpen:         isEditProfilePopupOpen,
-  isDataLoading:  isDataLoading,
-  onClose:        closeAllPopups,
-  onUpdateUser:   handleUpdateUser,
-};
+  const propsForEditProfilePopup = {
+    isOpen:         isEditProfilePopupOpen,
+    isDataLoading:  isDataLoading,
+    onClose:        closeAllPopups,
+    onUpdateUser:   handleUpdateUser,
+  };
 
-const propsForAddPlacePopup = {
-  isOpen:         isAddPlacePopupOpen,
-  isDataLoading:  isDataLoading,
-  onClose:        closeAllPopups,
-  onAddPlace:     handleAddPlaceSubmit,
-}
+  const propsForAddPlacePopup = {
+    isOpen:         isAddPlacePopupOpen,
+    isDataLoading:  isDataLoading,
+    onClose:        closeAllPopups,
+    onAddPlace:     handleAddPlaceSubmit,
+  }
 
-const propsForImagePopup = {
-  card:     selectedCard,
-  onClose:  closeAllPopups,
-}
+  const propsForImagePopup = {
+    card:     selectedCard,
+    onClose:  closeAllPopups,
+  }
 
-const propsForDeletePlacePopup = {
-  card:           selectedToDeleteCard,
-  isOpen:         isDeletePlacePopupOpen,
-  isDataLoading:  isDataLoading,
-  onClose:        closeAllPopups,
-  onCardDelete:   handleCardDeleteSubmit,
-}
+  const propsForDeletePlacePopup = {
+    card:           selectedToDeleteCard,
+    isOpen:         isDeletePlacePopupOpen,
+    isDataLoading:  isDataLoading,
+    onClose:        closeAllPopups,
+    onCardDelete:   handleCardDeleteSubmit,
+  }
+
+  const propsForRegister = {
+    isDataLoading:      isDataLoading,
+    onSubmit:           handleRegisterSubmit,
+    registerEmail:      registerEmail,
+    setRegisterEmail:   setRegisterEmail,
+    registerPassword:   registerPassword,
+    setRegisterPassword: setRegisterPassword,
+  }
+
+  const propsForLogin = {
+    isDataLoading:      isDataLoading,
+    onSubmit:           handleLoginSubmit,
+    loginEmail:         loginEmail,
+    setLoginEmail:      setLoginEmail,
+    loginPassword:      loginPassword,
+    setLoginPassword:   setLoginPassword,
+  }
 
 // ********************************************************************************************* //
 //                       Return different views of the application                               //
@@ -330,6 +350,12 @@ const propsForDeletePlacePopup = {
         <div className="page__wrapper">
           <Header />
           <div className="content">
+            <Route path="/register">
+              <Register {...propsForRegister} />
+            </Route>
+            <Route path="/login">
+              <Login {...propsForLogin} />
+            </Route>
             <Switch>
               <ProtectedRoute exact path="/" isLoggedIn={isLoggedIn}>
                 <Main {...propsForMain} />

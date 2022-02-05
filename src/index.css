@@ -66,3 +66,17 @@
 @import url(./blocks/popup/__caption/popup__caption.css);
 @import url(./blocks/popup/__error/popup__error.css);
 @import url(./blocks/popup/__error/_visible/popup__error_visible.css);
+
+/* stylesheets for the block - form */
+@import url(./blocks/form/form.css);
+@import url(./blocks/form/__link/form__link.css);
+@import url(./blocks/form/__submit/form__submit.css);
+@import url(./blocks/form/__submit/_disabled/form__submit_disabled.css);
+@import url(./blocks/form/__title/form__title.css);
+@import url(./blocks/form/__input/form__input.css);
+@import url(./blocks/form/__input/_type/form__input_type_error.css);
+@import url(./blocks/form/__error/form__error.css);
+@import url(./blocks/form/__error/_visible/form__error_visible.css);
+
+/* stylesheets for the block - auth-form */
+@import url(./blocks/auth-form/auth-form.css);
