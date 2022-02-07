@@ -5,4 +5,5 @@
 
 .form__submit_disabled:hover {
   cursor: not-allowed;
+  pointer-events: none;
 }

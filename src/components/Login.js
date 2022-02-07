@@ -55,7 +55,10 @@ function Login(props){
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit({loginEmail, loginPassword});
+    if((isLoginEmailValid && isLoginPasswordValid)
+        || (loginEmail !== '' && loginPassword !== '')){
+      onSubmit({loginEmail, loginPassword});
+    }
   }
 
   return (

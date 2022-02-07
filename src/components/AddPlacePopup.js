@@ -47,7 +47,10 @@ function AddPlacePopup(props){
 
   const handleSubmit = e => {
     e.preventDefault();
-    onAddPlace(cardName, cardImageLink);
+    if((isCardNameValid && isCardImageLinkValid)
+      || (cardName !== '' && cardImageLink !== '')){
+      onAddPlace(cardName, cardImageLink);
+    }
   }
 
   return (

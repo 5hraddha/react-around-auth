@@ -28,11 +28,13 @@ function Register(props){
   const passwordErrorClassName = `form__error ${(!isRegisterPasswordValid) && `form__error_visible`}`;
 
   React.useEffect(() => {
+    setRegisterEmail('');
+    setRegisterPassword('');
     setIsRegisterEmailValid(true);
     setIsRegisterPasswordValid(true);
     setRegisterEmailErrorMessage('');
     setRegisterPasswordErrorMessage('');
-  }, []);
+  }, [setRegisterEmail, setRegisterPassword]);
 
   const handleInputChange = e => {
     const {name, value, validity, validationMessage} = e.target;
@@ -55,7 +57,10 @@ function Register(props){
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit({registerEmail, registerPassword});
+    if((isRegisterEmailValid && isRegisterPasswordValid)
+      || (registerEmail !== '' && registerPassword !== '')){
+      onSubmit({registerEmail, registerPassword});
+    }
   }
 
   return (
