@@ -11,9 +11,27 @@
 
 /* stylesheet for the block - header */
 @import url(./blocks/header/header.css);
+@import url(./blocks/header/_menu-open.css/header_menu-open.css);
+@import url(./blocks/header/__content/header__content.css);
+@import url(./blocks/header/__menu/header__menu.css);
+@import url(./blocks/header/__menu-list/header__menu-list.css);
+@import url(./blocks/header/__link/header__link.css);
+@import url(./blocks/header/__text/header__text.css);
+@import url(./blocks/header/__button/header__button.css);
 
 /* stylesheets for the block - logo */
 @import url(./blocks/logo/logo.css);
+
+/* stylesheet for the block - hamburger */
+@import url(./blocks/hamburger/hamburger.css);
+@import url(./blocks/hamburger/__button/hamburger__button.css);
+@import url(./blocks/hamburger/__button/_close/hamburger__button_close.css);
+@import url(./blocks/hamburger/__logout-button/hamburger__logout-button.css);
+@import url(./blocks/hamburger/__text/hamburger__text.css);
+@import url(./blocks/hamburger/__menu/hamburger__menu.css);
+@import url(./blocks/hamburger/__menu/_visible/hamburger__menu_visible.css);
+@import url(./blocks/hamburger/__menu-list/hamburger__menu-list.css);
+@import url(./blocks/hamburger/__menu-list-item/hamburger__menu-list-item.css);
 
 /* stylesheets for the block - profile */
 @import url(./blocks/profile/profile.css);

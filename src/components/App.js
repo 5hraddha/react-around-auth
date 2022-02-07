@@ -267,7 +267,14 @@ function App() {
           }
         });
     }
-  }, [history])
+  }, [history]);
+
+  const handleLogOut = () => {
+    localStorage.removeItem('token');
+    history.push('/login');
+    setIsLoggedIn(false);
+    setCurrentUserEmail('');
+  }
 
 // ********************************************************************************************* //
 //                                Validate user token on page load                               //
@@ -341,6 +348,25 @@ function App() {
     setLoginPassword,
   }
 
+  const propsForHeaderRegister = {
+    isLoggedIn,
+    linkPath: '/login',
+    linkText: 'Log in',
+  }
+
+  const propsForHeaderLogin = {
+    isLoggedIn,
+    linkPath: '/register',
+    linkText: 'Sign up',
+  }
+
+  const propsForHeaderProtected = {
+    isLoggedIn,
+    linkText: 'Log out',
+    userEmail: currentUserEmail,
+    onLogOut: handleLogOut,
+  }
+
 // ********************************************************************************************* //
 //                       Return different views of the application                               //
 // ********************************************************************************************* //
@@ -348,28 +374,29 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <div className="page__wrapper">
-          <Header />
+          <Route path="/register">
+            <Header {...propsForHeaderRegister} />
+            <Register {...propsForRegister} />
+          </Route>
 
-            <Route path="/register">
-              <Register {...propsForRegister} />
-            </Route>
+          <Route path="/login">
+            <Header {...propsForHeaderLogin} />
+            <Login {...propsForLogin} />
+          </Route>
 
-            <Route path="/login">
-              <Login {...propsForLogin} />
-            </Route>
+          <Switch>
+            <ProtectedRoute exact path="/" isLoggedIn={isLoggedIn}>
+              <Header {...propsForHeaderProtected} />
+              <Main {...propsForMain} />
+              <EditAvatarPopup {...propsForEditAvatarPopup} />
+              <EditProfilePopup {...propsForEditProfilePopup} />
+              <AddPlacePopup {...propsForAddPlacePopup} />
+              <ImagePopup {...propsForImagePopup} />
+              <DeletePlacePopup {...propsForDeletePlacePopup} />
+              <Footer />
+            </ProtectedRoute>
+          </Switch>
 
-            <Switch>
-              <ProtectedRoute exact path="/" isLoggedIn={isLoggedIn}>
-                <Main {...propsForMain} />
-                <EditAvatarPopup {...propsForEditAvatarPopup} />
-                <EditProfilePopup {...propsForEditProfilePopup} />
-                <AddPlacePopup {...propsForAddPlacePopup} />
-                <ImagePopup {...propsForImagePopup} />
-                <DeletePlacePopup {...propsForDeletePlacePopup} />
-              </ProtectedRoute>
-            </Switch>
-
-          <Footer />
         </div>
       </div>
     </CurrentUserContext.Provider>

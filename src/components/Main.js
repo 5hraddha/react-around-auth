@@ -23,7 +23,6 @@ function Main(props) {
   const currentUser = React.useContext(CurrentUserContext);
 
   return (
-    <div className="content">
       <main>
         {/* section containing user info, functionality to edit it and to add new images */}
         <section className="profile">
@@ -69,7 +68,6 @@ function Main(props) {
           </ul>
         </section>
       </main>
-    </div>
   );
 }
 

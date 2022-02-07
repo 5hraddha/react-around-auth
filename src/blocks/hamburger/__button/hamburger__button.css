@@ -1,0 +1,18 @@
+.hamburger__button {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  width: 25px;
+  height: 22px;
+  background-color: transparent;
+  background-image: url(../../../images/hamburger.svg);
+  background-position: center;
+  background-size: cover;
+  border: none;
+  transition: all .3s ease-in-out;
+}
+
+.hamburger__button:hover {
+  cursor: pointer;
+  opacity: .6;
+}

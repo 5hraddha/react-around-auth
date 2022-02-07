@@ -1,0 +1,11 @@
+.hamburger__menu {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(84, 84, 84, .7);
+}
