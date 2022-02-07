@@ -121,7 +121,7 @@ class Api {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
-        avatar: newAvatarUrl
+        avatar: newAvatarUrl,
       })
     })
       .then(this._checkResponseStatus);

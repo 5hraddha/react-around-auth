@@ -1,63 +1,47 @@
-import React                 from 'react';
-import PropTypes             from 'prop-types';
-import PopupWithForm         from './PopupWithForm';
-import CurrentUserContext    from '../contexts/CurrentUserContext';
-import handleFormInputChange from '../utils/handleFormInputChange';
+import React                    from 'react';
+import PropTypes                from 'prop-types';
+import { useFormAndValidation } from '../hooks/useFormAndValidation';
+import PopupWithForm            from './PopupWithForm';
+import CurrentUserContext       from '../contexts/CurrentUserContext';
 
 /**
  * The **EditProfilePopup** component representing a popup with a form to update the current user data
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author [Shraddha](https://github.com/5hraddha)
  */
 function EditProfilePopup(props) {
   const {isOpen, isDataLoading, onClose, onUpdateUser}        = props;
-  const [name, setName]                                       = React.useState('');
-  const [description, setDescription]                         = React.useState('');
-  const [isNameValid, setIsNameValid]                         = React.useState(true);
-  const [isDescriptionValid, setIsDescriptionValid]           = React.useState(true);
-  const [nameErrorMessage, setNameErrorMessage]               = React.useState('');
-  const [descriptionErrorMessage, setDescriptionErrorMessage] = React.useState('');
+  const {values, isValid, errors, handleChange, resetForm}    = useFormAndValidation(['title', 'subtitle']);
   const currentUser                                           = React.useContext(CurrentUserContext);
 
-  const inputArr = [
-    {
-      name: 'title',
-      setValue: setName,
-      setValidity: setIsNameValid,
-      setErrorMessage: setNameErrorMessage,
-    },
-    {
-      name: 'subtitle',
-      setValue: setDescription,
-      setValidity: setIsDescriptionValid,
-      setErrorMessage: setDescriptionErrorMessage,
-    }
-  ];
-
+  // Reset form values every time the popup opens
   React.useEffect(() => {
-    setName(currentUser.name || '');
-    setDescription(currentUser.about || '');
-    setIsNameValid(true);
-    setIsDescriptionValid(true);
-    setNameErrorMessage('');
-    setDescriptionErrorMessage('');
-  }, [currentUser, isOpen]);
+    const initialInputValues = {
+      title: currentUser.name || '',
+      subtitle: currentUser.about || '',
+    };
+    const initialErrorValues = {
+      title: '',
+      subtitle: '',
+    }
+    resetForm({...initialInputValues}, {...initialErrorValues}, true);
+  }, [isOpen, resetForm, currentUser]);
 
-  const handleInputChange = (e) => handleFormInputChange(e, inputArr);
+  const handleInputChange = (e) => handleChange(e);
 
-  const handleSubmit = e => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    onUpdateUser({
-      name,
-      about: description,
-    });
+    const {title, subtitle} = values;
+    if(isValid || (title && subtitle)){
+      onUpdateUser({name: title, about: subtitle});
+    }
   }
 
-  const nameInputClassName = `popup__input ${(!isNameValid) && `popup__input_type_error`}`;
-  const nameInputErrorClassName = `popup__error ${(!isNameValid) && `popup__error_visible`}`;
-  const aboutInputClassName = `popup__input ${(!isDescriptionValid) && `popup__input_type_error`}`;
-  const aboutInputErrorClassName = `popup__error ${(!isDescriptionValid) && `popup__error_visible`}`;
+  const nameInputClassName = `popup__input ${(!isValid && errors.title) && `popup__input_type_error`}`;
+  const nameInputErrorClassName = `popup__error ${(!isValid && errors.title) && `popup__error_visible`}`;
+  const aboutInputClassName = `popup__input ${(!isValid && errors.subtitle) && `popup__input_type_error`}`;
+  const aboutInputErrorClassName = `popup__error ${(!isValid && errors.subtitle) && `popup__error_visible`}`;
 
   return (
     <PopupWithForm
@@ -66,7 +50,7 @@ function EditProfilePopup(props) {
       btnLabel={(isDataLoading) ? 'Saving': 'Save'}
       isOpen={isOpen}
       onClose={onClose}
-      onSubmit={handleSubmit} >
+      onSubmit={handleFormSubmit} >
 
         <input
           className={nameInputClassName}
@@ -77,10 +61,10 @@ function EditProfilePopup(props) {
           minLength="2"
           maxLength="40"
           onChange={handleInputChange}
-          value={name}
+          value={values.title}
           required />
         <span id="name-input-error" className={nameInputErrorClassName}>
-          {nameErrorMessage}
+          {errors.title}
         </span>
 
         <input
@@ -92,10 +76,10 @@ function EditProfilePopup(props) {
           minLength="2"
           maxLength="200"
           onChange={handleInputChange}
-          value={description}
+          value={values.subtitle}
           required />
         <span id="about-input-error" className={aboutInputErrorClassName}>
-          {descriptionErrorMessage}
+          {errors.subtitle}
         </span>
 
     </PopupWithForm>

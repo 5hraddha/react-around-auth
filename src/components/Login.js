@@ -1,12 +1,12 @@
-import React                  from 'react';
-import PropTypes              from 'prop-types';
-import Form                   from './Form';
-import handleFormInputChange  from '../utils/handleFormInputChange';
+import React                    from 'react';
+import PropTypes                from 'prop-types';
+import { useFormAndValidation } from '../hooks/useFormAndValidation';
+import Form                     from './Form';
 
 /**
  * The **Login** component representing user authorization or login form.
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author [Shraddha](https://github.com/5hraddha)
  */
 function Login(props){
@@ -18,47 +18,40 @@ function Login(props){
     loginPassword,
     setLoginPassword,
   }  = props;
-  const [isLoginEmailValid, setIsLoginEmailValid]                 = React.useState(true);
-  const [isLoginPasswordValid, setIsLoginPasswordValid]           = React.useState(true);
-  const [loginEmailErrorMessage, setLoginEmailErrorMessage]       = React.useState('');
-  const [loginPasswordErrorMessage, setLoginPasswordErrorMessage] = React.useState('');
+  const {isValid, errors, handleChange, resetForm} = useFormAndValidation(['login-email', 'login-password']);
 
-  const emailInputClassName = `form__input ${(!isLoginEmailValid) && `form__input_type_error`}`;
-  const emailErrorClassName = `form__error ${(!isLoginEmailValid) && `form__error_visible`}`;
-  const passwordInputClassName = `form__input ${(!isLoginPasswordValid) && `form__input_type_error`}`;
-  const passwordErrorClassName = `form__error ${(!isLoginPasswordValid) && `form__error_visible`}`;
-
-  const inputArr = [
-    {
-      name: 'login-email',
-      setValue: setLoginEmail,
-      setValidity: setIsLoginEmailValid,
-      setErrorMessage: setLoginEmailErrorMessage,
-    },
-    {
-      name: 'login-password',
-      setValue: setLoginPassword,
-      setValidity: setIsLoginPasswordValid,
-      setErrorMessage: setLoginPasswordErrorMessage,
-    }
-  ];
-
+  // Reset form values every time the popup opens
   React.useEffect(() => {
-    setIsLoginEmailValid(true);
-    setIsLoginPasswordValid(true);
-    setLoginEmailErrorMessage('');
-    setLoginPasswordErrorMessage('');
-  }, []);
+    const initialValues = {
+      'login-email': '',
+      'login-password': '',
+    };
+    setLoginEmail('');
+    setLoginPassword('');
+    resetForm({...initialValues}, {...initialValues}, true);
+  }, [resetForm, setLoginEmail, setLoginPassword]);
 
-  const handleInputChange = (e) => handleFormInputChange(e, inputArr);
+  const handleInputChange = (e) => {
+    if(e.target.name === 'login-email'){
+      setLoginEmail(e.target.value);
+    }
+    if(e.target.name === 'login-password'){
+      setLoginPassword(e.target.value);
+    }
+    handleChange(e);
+  };
 
-  const handleSubmit = e => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    if((isLoginEmailValid && isLoginPasswordValid)
-        || (loginEmail !== '' && loginPassword !== '')){
+    if(isValid || (loginEmail && loginPassword)){
       onSubmit({loginEmail, loginPassword});
     }
   }
+
+  const emailInputClassName = `form__input ${(!isValid && errors['login-email']) && `form__input_type_error`}`;
+  const emailErrorClassName = `form__error ${(!isValid && errors['login-email']) && `form__error_visible`}`;
+  const passwordInputClassName = `form__input ${(!isValid && errors['login-password']) && `form__input_type_error`}`;
+  const passwordErrorClassName = `form__error ${(!isValid && errors['login-password']) && `form__error_visible`}`;
 
   return (
     <div className="content">
@@ -69,7 +62,7 @@ function Login(props){
           btnLabel={(isDataLoading) ? 'Logging in': 'Log in'}
           linkPath="/register"
           linkText="Not a member yet? Sign up here!"
-          onSubmit={handleSubmit}>
+          onSubmit={handleFormSubmit}>
 
           <input
             className={emailInputClassName}
@@ -81,7 +74,7 @@ function Login(props){
             onChange={handleInputChange}
             required />
           <span id="login-email-error" className={emailErrorClassName}>
-              {loginEmailErrorMessage}
+              {errors['login-email']}
           </span>
 
           <input
@@ -95,7 +88,7 @@ function Login(props){
             onChange={handleInputChange}
             required />
           <span id="login-password-error" className={passwordErrorClassName}>
-              {loginPasswordErrorMessage}
+              {errors['login-password']}
           </span>
 
         </Form>

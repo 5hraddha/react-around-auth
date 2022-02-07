@@ -1,12 +1,12 @@
-import React                  from 'react';
-import PropTypes              from 'prop-types';
-import Form                   from './Form';
-import handleFormInputChange  from '../utils/handleFormInputChange';
+import React                    from 'react';
+import PropTypes                from 'prop-types';
+import { useFormAndValidation } from '../hooks/useFormAndValidation';
+import Form                     from './Form';
 
 /**
  * The **Register** component representing user registration form.
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author [Shraddha](https://github.com/5hraddha)
  */
 function Register(props){
@@ -18,49 +18,40 @@ function Register(props){
     registerPassword,
     setRegisterPassword,
   }  = props;
-  const [isRegisterEmailValid, setIsRegisterEmailValid]                 = React.useState(true);
-  const [isRegisterPasswordValid, setIsRegisterPasswordValid]           = React.useState(true);
-  const [registerEmailErrorMessage, setRegisterEmailErrorMessage]       = React.useState('');
-  const [registerPasswordErrorMessage, setRegisterPasswordErrorMessage] = React.useState('');
+  const {isValid, errors, handleChange, resetForm} = useFormAndValidation(['register-email', 'register-password']);
 
-  const emailInputClassName = `form__input ${(!isRegisterEmailValid) && `form__input_type_error`}`;
-  const emailErrorClassName = `form__error ${(!isRegisterEmailValid) && `form__error_visible`}`;
-  const passwordInputClassName = `form__input ${(!isRegisterPasswordValid) && `form__input_type_error`}`;
-  const passwordErrorClassName = `form__error ${(!isRegisterPasswordValid) && `form__error_visible`}`;
-
-  const inputArr = [
-    {
-      name: 'register-email',
-      setValue: setRegisterEmail,
-      setValidity: setIsRegisterEmailValid,
-      setErrorMessage: setRegisterEmailErrorMessage,
-    },
-    {
-      name: 'register-password',
-      setValue: setRegisterPassword,
-      setValidity: setIsRegisterPasswordValid,
-      setErrorMessage: setRegisterPasswordErrorMessage,
-    }
-  ];
-
+  // Reset form values every time the popup opens
   React.useEffect(() => {
+    const initialValues = {
+      'register-email': '',
+      'register-password': '',
+    };
     setRegisterEmail('');
     setRegisterPassword('');
-    setIsRegisterEmailValid(true);
-    setIsRegisterPasswordValid(true);
-    setRegisterEmailErrorMessage('');
-    setRegisterPasswordErrorMessage('');
-  }, [setRegisterEmail, setRegisterPassword]);
+    resetForm({...initialValues}, {...initialValues}, true);
+  }, [resetForm, setRegisterEmail, setRegisterPassword]);
 
-  const handleInputChange = (e) => handleFormInputChange(e, inputArr);
+  const handleInputChange = (e) => {
+    if(e.target.name === 'register-email'){
+      setRegisterEmail(e.target.value);
+    }
+    if(e.target.name === 'register-password'){
+      setRegisterPassword(e.target.value);
+    }
+    handleChange(e);
+  };
 
-  const handleSubmit = e => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    if((isRegisterEmailValid && isRegisterPasswordValid)
-      || (registerEmail !== '' && registerPassword !== '')){
+    if(isValid || (registerEmail && registerPassword)){
       onSubmit({registerEmail, registerPassword});
     }
   }
+
+  const emailInputClassName = `form__input ${(!isValid && errors['register-email']) && `form__input_type_error`}`;
+  const emailErrorClassName = `form__error ${(!isValid && errors['register-email']) && `form__error_visible`}`;
+  const passwordInputClassName = `form__input ${(!isValid && errors['register-password']) && `form__input_type_error`}`;
+  const passwordErrorClassName = `form__error ${(!isValid && errors['register-password']) && `form__error_visible`}`;
 
   return (
     <div className="content">
@@ -71,7 +62,7 @@ function Register(props){
           btnLabel={(isDataLoading) ? 'Signing up': 'Sign up'}
           linkPath="/login"
           linkText="Already a member? Log in here!"
-          onSubmit={handleSubmit}>
+          onSubmit={handleFormSubmit}>
 
           <input
             className={emailInputClassName}
@@ -83,7 +74,7 @@ function Register(props){
             onChange={handleInputChange}
             required />
           <span id="register-email-error" className={emailErrorClassName}>
-              {registerEmailErrorMessage}
+              {errors['register-email']}
           </span>
 
           <input
@@ -97,7 +88,7 @@ function Register(props){
             onChange={handleInputChange}
             required />
           <span id="register-password-error" className={passwordErrorClassName}>
-              {registerPasswordErrorMessage}
+              {errors['register-password']}
           </span>
 
         </Form>

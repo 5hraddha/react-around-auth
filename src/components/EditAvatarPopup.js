@@ -1,36 +1,38 @@
-import React            from 'react';
-import PropTypes        from 'prop-types';
-import PopupWithForm    from './PopupWithForm';
+import React                    from 'react';
+import PropTypes                from 'prop-types';
+import { useFormAndValidation } from '../hooks/useFormAndValidation';
+import PopupWithForm            from './PopupWithForm';
 
 /**
  * The **EditAvatarPopup** component representing a popup with a form to edit user avatar
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author [Shraddha](https://github.com/5hraddha)
  */
 function EditAvatarPopup(props) {
   const {isOpen, isDataLoading, onClose, onUpdateAvatar}  = props;
-  const [isImageLinkValid, setIsImageLinkValid]           = React.useState(true);
-  const [imageLinkErrorMessage, setImageLinkErrorMessage] = React.useState('');
-  const imageLinkInputRef                                 = React.useRef();
+  const {values, isValid, errors, handleChange, resetForm} = useFormAndValidation(['avatarlink']);
 
+   // Reset form values every time the popup opens
   React.useEffect(() => {
-    imageLinkInputRef.current.value = '';
-    setIsImageLinkValid(true);
-  }, [isOpen]);
+    const initialValues = {
+      avatarlink: '',
+    };
+    resetForm({...initialValues}, {...initialValues}, true);
+  }, [isOpen, resetForm]);
 
-  const handleSubmit = e => {
+  const handleInputChange = (e) => handleChange(e);
+
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    onUpdateAvatar(imageLinkInputRef.current.value);
+    const { avatarlink } = values;
+    if(isValid || avatarlink){
+      onUpdateAvatar(avatarlink);
+    }
   }
 
-  const handleCheckValidity = e => {
-    setIsImageLinkValid(e.target.validity.valid);
-    setImageLinkErrorMessage(imageLinkInputRef.current.validationMessage);
-  }
-
-  const linkInputClassName = `popup__input ${(!isImageLinkValid) && `popup__input_type_error`}`;
-  const linkInputErrorClassName = `popup__error ${(!isImageLinkValid) && `popup__error_visible`}`;
+  const linkInputClassName = `popup__input ${(!isValid && errors.avatarlink) && `popup__input_type_error`}`;
+  const linkInputErrorClassName = `popup__error ${(!isValid && errors.avatarlink) && `popup__error_visible`}`;
 
   return (
     <PopupWithForm
@@ -39,7 +41,7 @@ function EditAvatarPopup(props) {
       btnLabel={(isDataLoading) ? 'Saving': 'Save'}
       isOpen={isOpen}
       onClose={onClose}
-      onSubmit={handleSubmit} >
+      onSubmit={handleFormSubmit}>
 
         <input
           className={linkInputClassName}
@@ -47,11 +49,11 @@ function EditAvatarPopup(props) {
           id="avatarlink-input"
           name="avatarlink"
           placeholder="Image link"
-          ref={imageLinkInputRef}
-          onChange={handleCheckValidity}
+          value={values.avatarlink}
+          onChange={handleInputChange}
           required />
         <span id="avatarlink-input-error" className={linkInputErrorClassName}>
-          {imageLinkErrorMessage}
+          {errors.avatarlink}
         </span>
 
     </PopupWithForm>
