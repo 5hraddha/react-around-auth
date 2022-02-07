@@ -397,17 +397,15 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <div className="page__wrapper">
-          <Route path="/register">
-            <Header {...propsForHeaderRegister} />
-            <Register {...propsForRegister} />
-          </Route>
-
-          <Route path="/login">
-            <Header {...propsForHeaderLogin} />
-            <Login {...propsForLogin} />
-          </Route>
-
           <Switch>
+            <Route path="/register">
+              <Header {...propsForHeaderRegister} />
+              <Register {...propsForRegister} />
+            </Route>
+            <Route path="/login">
+              <Header {...propsForHeaderLogin} />
+              <Login {...propsForLogin} />
+            </Route>
             <ProtectedRoute exact path="/" isLoggedIn={isLoggedIn}>
               <Header {...propsForHeaderProtected} />
               <Main {...propsForMain} />
