@@ -1,0 +1,17 @@
+.popup__tooltip-img {
+  box-sizing: border-box;
+  display: block;
+  margin: 24px auto 32px;
+  padding: 0;
+  width: 100%;
+  max-width: 120px;
+  max-height: 120px;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media screen and (max-width: 550px) {
+  .popup__tooltip-img {
+    margin: 25px auto 40px;
+  }
+}

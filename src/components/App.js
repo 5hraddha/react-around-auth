@@ -14,6 +14,7 @@ import AddPlacePopup        from './AddPlacePopup';
 import DeletePlacePopup     from './DeletePlacePopup';
 import Register             from './Register';
 import Login                from './Login';
+import InfoTooltip          from './InfoTooltip';
 import Footer               from './Footer';
 import ProtectedRoute       from './ProtectedRoute';
 import api                  from '../utils/api';
@@ -32,6 +33,8 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen]         = React.useState(false);
   const [isPreviewPlacePopupOpen, setIsPreviewPlacePopupOpen] = React.useState(false);
   const [isDeletePlacePopupOpen, setIsDeletePlacePopupOpen]   = React.useState(false);
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen]   = React.useState(false);
+  const [userRegisterStatus, setUserRegisterStatus] = React.useState(false);
   const [isDataLoading, setIsDataLoading]                     = React.useState(false);
   const [selectedCard, setSelectedCard]                       = React.useState(null);
   const [selectedToDeleteCard, setSelectedToDeleteCard]       = React.useState(null);
@@ -88,10 +91,11 @@ function App() {
       || isEditAvatarPopupOpen
       || isAddPlacePopupOpen
       || isPreviewPlacePopupOpen
-      || isDeletePlacePopupOpen){
+      || isDeletePlacePopupOpen
+      || isInfoTooltipPopupOpen){
         document.addEventListener("click", handleClickClose);
         document.addEventListener("keydown", handleEscClose);
-      }
+    }
 
     return () => {
       document.removeEventListener("click", handleClickClose);
@@ -101,7 +105,8 @@ function App() {
     isEditAvatarPopupOpen,
     isAddPlacePopupOpen,
     isPreviewPlacePopupOpen,
-    isDeletePlacePopupOpen] );
+    isDeletePlacePopupOpen,
+    isInfoTooltipPopupOpen] );
 
   const closeAllPopups = () => {
     setIsEditProfilePopupOpen(false);
@@ -109,6 +114,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsPreviewPlacePopupOpen(false);
     setIsDeletePlacePopupOpen(false);
+    setIsInfoTooltipPopupOpen(false);
     setSelectedCard(null);
     setSelectedToDeleteCard(null);
   }
@@ -207,15 +213,26 @@ function App() {
     auth
       .register(registerEmail, registerPassword)
       .then(res => {
+        setUserRegisterStatus(true);
         history.push('/login');
       })
       .catch(err => {
+        setUserRegisterStatus(false);
         console.log('Uh-oh! Error occurred while registering a new user.');
         if(err.status === 400){
           console.log('One of the fields was filled in incorrectly while user registration.');
         }
       })
-      .finally(() => setIsDataLoading(false));
+      .finally(() => {
+        setIsDataLoading(false);
+        setIsInfoTooltipPopupOpen(true);
+        // Close the InfoTooltip popup after 2 sec
+        let timeoutId = null;
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          setIsInfoTooltipPopupOpen(false);
+        }, 2000);
+      });
   }
 
   const handleLoginSubmit = () => {
@@ -241,7 +258,8 @@ function App() {
         if(err.status === 401){
           console.log('The user with the specified email not found.');
         }
-      });
+      })
+      .finally(() => setIsDataLoading(false));
   }
 
   const validateToken = React.useCallback(() => {
@@ -367,6 +385,13 @@ function App() {
     onLogOut: handleLogOut,
   }
 
+  const propsForInfoTooltip = {
+    name:         'tooltip',
+    isOpen:       isInfoTooltipPopupOpen,
+    isSuccess:    userRegisterStatus,
+    onClose:      closeAllPopups,
+  }
+
 // ********************************************************************************************* //
 //                       Return different views of the application                               //
 // ********************************************************************************************* //
@@ -396,7 +421,7 @@ function App() {
               <Footer />
             </ProtectedRoute>
           </Switch>
-
+          <InfoTooltip {...propsForInfoTooltip} />
         </div>
       </div>
     </CurrentUserContext.Provider>

@@ -1,0 +1,28 @@
+.popup__tooltip-close-btn {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  background-image: url(../../../images/popup-close.svg);
+  background-position: center;
+  background-size: cover;
+  border: none;
+  transition: all .3s ease-in-out;
+}
+
+.popup__tooltip-close-btn:hover {
+  cursor: pointer;
+  opacity: .6;
+}
+
+@media screen and (max-width: 550px) {
+  .popup__tooltip-close-btn {
+    top: -50px;
+    right: 40%;
+  }
+}
