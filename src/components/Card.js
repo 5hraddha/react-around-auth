@@ -29,26 +29,24 @@ function Card(props){
   const handleDeleteClick = () => onCardDeleteClick(card);
 
   return (
-    <li className="element" key={card._id}>
+    <li className="element">
       <img className="element__img" src={card.link} alt={card.name} onClick={handleClick} />
       <div className="element__text">
         <h2 className="element__title">{card.name}</h2>
         <div className="element__likes">
           <button
-                  className={cardLikeButtonClassName}
-                  type="button"
-                  aria-label="Like Image"
-                  onClick={handleLikeClick}>
-          </button>
+            className={cardLikeButtonClassName}
+            type="button"
+            aria-label="Like Image"
+            onClick={handleLikeClick} />
           <p className="element__like-count">{card.likes.length}</p>
         </div>
       </div>
       <button
-              className={cardDeleteButtonClassName}
-              type="button"
-              aria-label="Delete Image"
-              onClick={handleDeleteClick}>
-      </button>
+        className={cardDeleteButtonClassName}
+        type="button"
+        aria-label="Delete Image"
+        onClick={handleDeleteClick} />
     </li>
   );
 }
