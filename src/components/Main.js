@@ -29,42 +29,41 @@ function Main(props) {
           <div className="profile__avatar-container">
             <img className="profile__avatar" src={currentUser.avatar} alt="profile avatar" />
             <button
-                    className="profile__avatar-update-button"
-                    type="button"
-                    aria-label="Update Profile Picture"
-                    onClick={onEditAvatarClick}>
-            </button>
+              className="profile__avatar-update-button"
+              type="button"
+              aria-label="Update Profile Picture"
+              onClick={onEditAvatarClick} />
           </div>
           <div className="profile__info">
             <div className="profile__main-content">
               <h1 className="profile__title">{currentUser.name}</h1>
               <button
-                      className="profile__edit-btn"
-                      type="button"
-                      aria-label="Edit Profile"
-                      onClick={onEditProfileClick}>
-              </button>
+                className="profile__edit-btn"
+                type="button"
+                aria-label="Edit Profile"
+                onClick={onEditProfileClick} />
             </div>
             <p className="profile__subtitle">{currentUser.about}</p>
           </div>
           <button
-                  className="profile__add-btn"
-                  type="button"
-                  aria-label="Add Image"
-                  onClick={onAddPlaceClick}>
-          </button>
+            className="profile__add-btn"
+            type="button"
+            aria-label="Add Image"
+            onClick={onAddPlaceClick} />
         </section>
 
         {/* section containing all the cards having images and functionality to like/unlike */}
         <section>
           <ul className="elements">
-            {cards.map(card =>
+            {cards.map((card) => (
               <Card
                 key={card._id}
                 card={card}
                 onCardClick={onCardClick}
                 onCardLike={onCardLike}
-                onCardDeleteClick={onCardDeleteClick} />)}
+                onCardDeleteClick={onCardDeleteClick}
+              />)
+            )}
           </ul>
         </section>
       </main>
