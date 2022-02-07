@@ -34,7 +34,7 @@ function App() {
   const [isPreviewPlacePopupOpen, setIsPreviewPlacePopupOpen] = React.useState(false);
   const [isDeletePlacePopupOpen, setIsDeletePlacePopupOpen]   = React.useState(false);
   const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen]   = React.useState(false);
-  const [userRegisterStatus, setUserRegisterStatus] = React.useState(false);
+  const [userRegisterStatus, setUserRegisterStatus]           = React.useState(false);
   const [isDataLoading, setIsDataLoading]                     = React.useState(false);
   const [selectedCard, setSelectedCard]                       = React.useState(null);
   const [selectedToDeleteCard, setSelectedToDeleteCard]       = React.useState(null);
@@ -74,6 +74,14 @@ function App() {
 // ********************************************************************************************* //
 //                        Handle mouse click or Esc key down event                               //
 // ********************************************************************************************* //
+  const isAnyPopupOpen = (
+    isEditProfilePopupOpen
+    || isEditAvatarPopupOpen
+    || isAddPlacePopupOpen
+    || isPreviewPlacePopupOpen
+    || isDeletePlacePopupOpen
+    || isInfoTooltipPopupOpen);
+
   React.useEffect(() => {
     const handleClickClose = e => {
       if(e.target.classList.contains('popup_opened')) {
@@ -87,12 +95,7 @@ function App() {
       }
     }
 
-    if(isEditProfilePopupOpen
-      || isEditAvatarPopupOpen
-      || isAddPlacePopupOpen
-      || isPreviewPlacePopupOpen
-      || isDeletePlacePopupOpen
-      || isInfoTooltipPopupOpen){
+    if(isAnyPopupOpen){
         document.addEventListener("click", handleClickClose);
         document.addEventListener("keydown", handleEscClose);
     }
@@ -101,12 +104,7 @@ function App() {
       document.removeEventListener("click", handleClickClose);
       document.removeEventListener("keydown", handleEscClose);
     }
-  }, [isEditProfilePopupOpen,
-    isEditAvatarPopupOpen,
-    isAddPlacePopupOpen,
-    isPreviewPlacePopupOpen,
-    isDeletePlacePopupOpen,
-    isInfoTooltipPopupOpen] );
+  }, [isAnyPopupOpen] );
 
   const closeAllPopups = () => {
     setIsEditProfilePopupOpen(false);
@@ -212,7 +210,7 @@ function App() {
     setIsDataLoading(true);
     auth
       .register(registerEmail, registerPassword)
-      .then(res => {
+      .then(() => {
         setUserRegisterStatus(true);
         history.push('/login');
       })

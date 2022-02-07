@@ -1,6 +1,7 @@
-import React                from 'react';
-import PropTypes            from 'prop-types';
-import Form                 from './Form';
+import React                  from 'react';
+import PropTypes              from 'prop-types';
+import Form                   from './Form';
+import handleFormInputChange  from '../utils/handleFormInputChange';
 
 /**
  * The **Register** component representing user registration form.
@@ -27,6 +28,21 @@ function Register(props){
   const passwordInputClassName = `form__input ${(!isRegisterPasswordValid) && `form__input_type_error`}`;
   const passwordErrorClassName = `form__error ${(!isRegisterPasswordValid) && `form__error_visible`}`;
 
+  const inputArr = [
+    {
+      name: 'register-email',
+      setValue: setRegisterEmail,
+      setValidity: setIsRegisterEmailValid,
+      setErrorMessage: setRegisterEmailErrorMessage,
+    },
+    {
+      name: 'register-password',
+      setValue: setRegisterPassword,
+      setValidity: setIsRegisterPasswordValid,
+      setErrorMessage: setRegisterPasswordErrorMessage,
+    }
+  ];
+
   React.useEffect(() => {
     setRegisterEmail('');
     setRegisterPassword('');
@@ -36,24 +52,7 @@ function Register(props){
     setRegisterPasswordErrorMessage('');
   }, [setRegisterEmail, setRegisterPassword]);
 
-  const handleInputChange = e => {
-    const {name, value, validity, validationMessage} = e.target;
-    switch (name) {
-      case 'register-email' : {
-        setRegisterEmail(value);
-        setIsRegisterEmailValid(validity.valid);
-        (!validity.valid) && setRegisterEmailErrorMessage(validationMessage);
-        break;
-      }
-      case 'register-password': {
-        setRegisterPassword(value);
-        setIsRegisterPasswordValid(validity.valid);
-        (!validity.valid) && setRegisterPasswordErrorMessage(validationMessage);
-        break;
-      }
-      default: break;
-    }
-  }
+  const handleInputChange = (e) => handleFormInputChange(e, inputArr);
 
   const handleSubmit = e => {
     e.preventDefault();

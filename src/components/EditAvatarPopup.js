@@ -29,6 +29,9 @@ function EditAvatarPopup(props) {
     setImageLinkErrorMessage(imageLinkInputRef.current.validationMessage);
   }
 
+  const linkInputClassName = `popup__input ${(!isImageLinkValid) && `popup__input_type_error`}`;
+  const linkInputErrorClassName = `popup__error ${(!isImageLinkValid) && `popup__error_visible`}`;
+
   return (
     <PopupWithForm
       name="avatar"
@@ -37,20 +40,20 @@ function EditAvatarPopup(props) {
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit} >
-      <input
-        className={`popup__input ${(!isImageLinkValid) && `popup__input_type_error`}`}
-        type="url"
-        id="avatarlink-input"
-        name="avatarlink"
-        placeholder="Image link"
-        ref={imageLinkInputRef}
-        onChange={handleCheckValidity}
-        required />
-      <span
-        id="avatarlink-input-error"
-        className={`popup__error ${(!isImageLinkValid) && `popup__error_visible`}`}>
+
+        <input
+          className={linkInputClassName}
+          type="url"
+          id="avatarlink-input"
+          name="avatarlink"
+          placeholder="Image link"
+          ref={imageLinkInputRef}
+          onChange={handleCheckValidity}
+          required />
+        <span id="avatarlink-input-error" className={linkInputErrorClassName}>
           {imageLinkErrorMessage}
         </span>
+
     </PopupWithForm>
   );
 }

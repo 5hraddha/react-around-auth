@@ -22,6 +22,8 @@ function PopupWithForm(props) {
     setIsFormValid(formRef.current.checkValidity());
   }
 
+  const submitButtonClassName = `popup__submit popup__submit_rel_${name} ${!isFormValid && `popup__submit_disabled`}`;
+
   return (
     <div className={`popup popup_rel_${name} ${isOpen && 'popup_opened'}`}>
     <div className="popup__container">
@@ -33,21 +35,17 @@ function PopupWithForm(props) {
         onSubmit={onSubmit}
         onChange={handleChange}
         noValidate>
-        <h2 className={`popup__title popup__title_rel_${name}`}>{title}</h2>
-        {children}
-        <button
-                className={`popup__submit popup__submit_rel_${name} ${!isFormValid && `popup__submit_disabled`}`}
-                type="submit"
-                aria-label={`${btnLabel} ${name}`}>
-          {btnLabel}
-        </button>
+
+          <h2 className={`popup__title popup__title_rel_${name}`}>{title}</h2>
+
+          {children}
+
+          <button className={submitButtonClassName} type="submit" aria-label={`${btnLabel} ${name}`}>
+            {btnLabel}
+          </button>
+
       </form>
-      <button
-              className="popup__close-btn"
-              type="button"
-              aria-label="Close popup"
-              onClick={onClose}>
-      </button>
+      <button className="popup__close-btn" type="button" aria-label="Close popup" onClick={onClose} />
     </div>
   </div>
   );

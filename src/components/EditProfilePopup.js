@@ -1,7 +1,8 @@
-import React                from 'react';
-import PropTypes            from 'prop-types';
-import PopupWithForm        from './PopupWithForm';
-import CurrentUserContext   from '../contexts/CurrentUserContext';
+import React                 from 'react';
+import PropTypes             from 'prop-types';
+import PopupWithForm         from './PopupWithForm';
+import CurrentUserContext    from '../contexts/CurrentUserContext';
+import handleFormInputChange from '../utils/handleFormInputChange';
 
 /**
  * The **EditProfilePopup** component representing a popup with a form to update the current user data
@@ -19,6 +20,21 @@ function EditProfilePopup(props) {
   const [descriptionErrorMessage, setDescriptionErrorMessage] = React.useState('');
   const currentUser                                           = React.useContext(CurrentUserContext);
 
+  const inputArr = [
+    {
+      name: 'title',
+      setValue: setName,
+      setValidity: setIsNameValid,
+      setErrorMessage: setNameErrorMessage,
+    },
+    {
+      name: 'subtitle',
+      setValue: setDescription,
+      setValidity: setIsDescriptionValid,
+      setErrorMessage: setDescriptionErrorMessage,
+    }
+  ];
+
   React.useEffect(() => {
     setName(currentUser.name || '');
     setDescription(currentUser.about || '');
@@ -28,24 +44,7 @@ function EditProfilePopup(props) {
     setDescriptionErrorMessage('');
   }, [currentUser, isOpen]);
 
-  const handleInputChange = e => {
-    const {name, value, validity, validationMessage} = e.target;
-    switch (name) {
-      case 'title' : {
-        setName(value);
-        setIsNameValid(validity.valid);
-        (!validity.valid) && setNameErrorMessage(validationMessage);
-        break;
-      }
-      case 'subtitle': {
-        setDescription(value);
-        setIsDescriptionValid(validity.valid);
-        (!validity.valid) && setDescriptionErrorMessage(validationMessage);
-        break;
-      }
-      default: break;
-    }
-  }
+  const handleInputChange = (e) => handleFormInputChange(e, inputArr);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -55,6 +54,11 @@ function EditProfilePopup(props) {
     });
   }
 
+  const nameInputClassName = `popup__input ${(!isNameValid) && `popup__input_type_error`}`;
+  const nameInputErrorClassName = `popup__error ${(!isNameValid) && `popup__error_visible`}`;
+  const aboutInputClassName = `popup__input ${(!isDescriptionValid) && `popup__input_type_error`}`;
+  const aboutInputErrorClassName = `popup__error ${(!isDescriptionValid) && `popup__error_visible`}`;
+
   return (
     <PopupWithForm
       name="profile"
@@ -63,38 +67,37 @@ function EditProfilePopup(props) {
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit} >
-      <input
-        className={`popup__input ${(!isNameValid) && `popup__input_type_error`}`}
-        type="text"
-        id="name-input"
-        name="title"
-        placeholder="Name"
-        minLength="2"
-        maxLength="40"
-        onChange={handleInputChange}
-        value={name}
-        required />
-      <span
-        id="name-input-error"
-        className={`popup__error ${(!isNameValid) && `popup__error_visible`}`}>
+
+        <input
+          className={nameInputClassName}
+          type="text"
+          id="name-input"
+          name="title"
+          placeholder="Name"
+          minLength="2"
+          maxLength="40"
+          onChange={handleInputChange}
+          value={name}
+          required />
+        <span id="name-input-error" className={nameInputErrorClassName}>
           {nameErrorMessage}
         </span>
-      <input
-        className={`popup__input ${(!isDescriptionValid) && `popup__input_type_error`}`}
-        type="text"
-        id="about-input"
-        name="subtitle"
-        placeholder="About me"
-        minLength="2"
-        maxLength="200"
-        onChange={handleInputChange}
-        value={description}
-        required />
-      <span
-        id="about-input-error"
-        className={`popup__error ${(!isDescriptionValid) && `popup__error_visible`}`}>
+
+        <input
+          className={aboutInputClassName}
+          type="text"
+          id="about-input"
+          name="subtitle"
+          placeholder="About me"
+          minLength="2"
+          maxLength="200"
+          onChange={handleInputChange}
+          value={description}
+          required />
+        <span id="about-input-error" className={aboutInputErrorClassName}>
           {descriptionErrorMessage}
         </span>
+
     </PopupWithForm>
   );
 }

@@ -1,6 +1,7 @@
-import React                from 'react';
-import PropTypes            from 'prop-types';
-import Form                 from './Form';
+import React                  from 'react';
+import PropTypes              from 'prop-types';
+import Form                   from './Form';
+import handleFormInputChange  from '../utils/handleFormInputChange';
 
 /**
  * The **Login** component representing user authorization or login form.
@@ -27,6 +28,21 @@ function Login(props){
   const passwordInputClassName = `form__input ${(!isLoginPasswordValid) && `form__input_type_error`}`;
   const passwordErrorClassName = `form__error ${(!isLoginPasswordValid) && `form__error_visible`}`;
 
+  const inputArr = [
+    {
+      name: 'login-email',
+      setValue: setLoginEmail,
+      setValidity: setIsLoginEmailValid,
+      setErrorMessage: setLoginEmailErrorMessage,
+    },
+    {
+      name: 'login-password',
+      setValue: setLoginPassword,
+      setValidity: setIsLoginPasswordValid,
+      setErrorMessage: setLoginPasswordErrorMessage,
+    }
+  ];
+
   React.useEffect(() => {
     setIsLoginEmailValid(true);
     setIsLoginPasswordValid(true);
@@ -34,24 +50,7 @@ function Login(props){
     setLoginPasswordErrorMessage('');
   }, []);
 
-  const handleInputChange = e => {
-    const {name, value, validity, validationMessage} = e.target;
-    switch (name) {
-      case 'login-email' : {
-        setLoginEmail(value);
-        setIsLoginEmailValid(validity.valid);
-        (!validity.valid) && setLoginEmailErrorMessage(validationMessage);
-        break;
-      }
-      case 'login-password': {
-        setLoginPassword(value);
-        setIsLoginPasswordValid(validity.valid);
-        (!validity.valid) && setLoginPasswordErrorMessage(validationMessage);
-        break;
-      }
-      default: break;
-    }
-  }
+  const handleInputChange = (e) => handleFormInputChange(e, inputArr);
 
   const handleSubmit = e => {
     e.preventDefault();
